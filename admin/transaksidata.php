@@ -20,9 +20,8 @@ include "header.php";
     <!-- Info boxes -->
     <div class="box box-primary">
       <div class="box-header">
-        <a href="transaksitambah.php"  class="btn btn-primary"><i class="glyphicon glyphicon-plus">
-        </i>Tambah</a>
-
+        <a href="transaksitambah.php" class="btn btn-primary"><i class="glyphicon glyphicon-plus">
+          </i>Tambah</a>
       </div>
       <!-- /.box-header -->
       <div class="box-body ">
@@ -31,7 +30,7 @@ include "header.php";
             <tr>
               <th>NO</th>
               <th>TANGGAL PENJUALAN</th>
-              <th>NAMA penjualan</th>
+              <th>NAMA Pelanggan</th>
               <th>TOTAL</th>
               <th>OPSI</th>
             </tr>
@@ -44,15 +43,18 @@ include "header.php";
                 die("Koneksi database gagal: " . mysqli_connect_error());
               }
               $iduser = $_SESSION['iduser'];
-              $dt_penjualan = mysqli_query($conn, "SELECT * FROM tb_penjualan
-              INNER JOIN tb_pelanggan ON tb_pelanggan.idpelanggan");
+              $dt_penjualan = mysqli_query($conn, "SELECT tb_penjualan.tanggal, tb_penjualan.totalharga, 
+                                     tb_pelanggan.nama 
+                                     FROM tb_penjualan
+                                     INNER JOIN tb_pelanggan ON tb_pelanggan.idpelanggan = tb_penjualan.idpelanggan");
+
               $no = 1;
               while ($penjualan = mysqli_fetch_array($dt_penjualan)) { ?>
                 <td><?php echo $no++; ?></td>
-                <td><?php echo $penjualan['tanggalpenjualan'];?></td>
-                <td><?php echo $penjualan['nama'];?></td>
-                <td><?php echo "Rp. " .number_format($penjualan['totalharga']);?></td>
-                
+                <td><?php echo $penjualan['tanggal']; ?></td>
+                <td><?php echo $penjualan['nama']; ?></td>
+                <td><?php echo "Rp. " . number_format($penjualan['totalharga']);?></td>
+
             </tr>
           <?php
               }
@@ -102,5 +104,6 @@ include "header.php";
 <!-- /.modal -->
 <?php
 
-include "footer.php"
+include "footer.php";
+
 ?>

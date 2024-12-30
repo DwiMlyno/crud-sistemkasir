@@ -28,40 +28,47 @@ include "header.php";
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $conn = mysqli_connect("127.0.0.1:3307", "root", "", "sistemkasir");
-                                $dt_jumlah = mysqli_query($conn, "SELECT *, SUM(JumlahMenu) as JumlahMenu from tb_detailpenjualan INNER JOIN tb_menu on tb_menu.idmenu = tb_detailpenjualan.idmenu where idpenjualan = '$kodeBarang' group by tb_detailpenjualan.idmenu");
-                                $dt_penjualan = mysqli_query($conn, "SELECT * FROM tb_detailpenjualan INNER JOIN tb_menu ON tb_menu.idmenu = tb_detailpenjualan.idmenu");
-                                $no = 1;
-                                while ($penjualan = mysqli_fetch_array($dt_penjualan)) { ?>
-                                    <tr>
+                                <tr>
+                                    <?php
+                                    $conn = mysqli_connect("127.0.0.1:3307", "root", "", "sistemkasir");
+                                    $dt_penjualan = mysqli_query($conn, "SELECT max(idpenjualan) as idpenjualan from tb_penjualan");
+                                    $penjualan = mysqli_fetch_array($dt_penjualan);
+                                    $kodepenjualan = $penjualan['idpenjualan'];
+                                    $urutan = (int) substr($kodepenjualan, -4, 4);
+                                    $urutan++;
+                                    $huruf = date('ymd');
+                                    $kodeBarang = $huruf . sprintf("%04s", $urutan);
+                                    $dt_jumlah = mysqli_query($conn, "SELECT *, SUM(jumlahmenu) as jumlahmenu from tb_detailpenjualan INNER JOIN tb_menu on tb_menu.idmenu = tb_detailpenjualan.idmenu where idpenjualan = '$kodeBarang' group by tb_detailpenjualan.idmenu");
+                                    $no = 1;
+                                    while ($penjualan = mysqli_fetch_array($dt_jumlah)) { ?>
+
                                         <td><?= $no++; ?></td>
-                                        <td><?= $penjualan['namamenu']; ?></td> <!-- Perbaikan kolom nama barang -->
+                                        <td><?= $penjualan['namamenu']; ?></td>
                                         <td><?= $penjualan['jumlahmenu']; ?></td>
                                         <td><?= "Rp." . number_format($penjualan['subtotal']); ?></td>
                                         <td>
                                             <a href="#" class="btn btn-danger" role="button"
                                                 title="Hapus Data"><i class="glyphicon glyphicon-trash"></i></a>
                                         </td>
-                                    <?php
-                                }
-                                    ?>
-                                    </tr>
-                                   <tfoot>
-                                    <tr>
+                                </tr>
+                            <?php
+                                    }
+                            ?>
+                            <tfoot>
+                                <tr>
                                     <?php
                                     $PenjualanID = $kodeBarang;
                                     $ProdukID = $penjualan['idmenu'];
-                                    $dt_sub_total = mysqli_query($conn, "SELECT SUM(SubTotal) AS Sub_Total FROM tb_detailpenjualan where tb_detailpenjualan.idmenu = '$ProdukID' and idpenjualan = '$PenjualanID'");
-                                    while ($dt_total = mysqli_fetch_array($dt_sub_total)) { ?>
-                                    <?php 
-                                        $sub_total = +$sub_total_belanja['Sub_Total'];
+                                    $sub_total_belanja = mysqli_query($conn, "SELECT SUM(subtotal) AS Sub_Total FROM tb_detailpenjualan where idpenjualan = '$PenjualanID'");
+                                    while ($total_belanja = mysqli_fetch_array($sub_total_belanja)) { ?>
+                                    <?php
+                                        $total = +$total_belanja['Sub_Total'];
                                     }
                                     ?>
                                     <td colspan="3">Total Belanja</td>
-                                    <td colspan="2"><strong><?php echo "Rp. " . number_format($total).", -" ?></td>
-                                    </tr>
-                                   </tfoot>
+                                    <td colspan="2"><strong><?php echo "Rp. " . number_format($total) . ", -" ?></td>
+                                </tr>
+                            </tfoot>
                             </tbody>
                         </table>
                     </div>
@@ -69,24 +76,22 @@ include "header.php";
                 </div>
                 <!-- /.row -->
             </div>
-            <form action="#">
+            <form action="transaksirekap.php" method="POST">
                 <div class="col-md-3">
                     <div class="box box-primary">
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="">Total Harga</label>
-                                <input type="text" name="total" class="form-control" value="1000">
-                            </div>
-                            <div class="form-group">
+                                <input type="text" name="totalharga" class="form-control" value="<?php echo $total;?>">
                                 <label for="">Tanggal</label>
-                                <input type="date" name="total" class="form-control" value="<? date('Y-m-d') ?>">
+                                <input type="date" name="tanggal" class="form-control" value="<?=date('Y-m-d') ?>">
                             </div>
                             <div class="form-group">
                                 <?php
                                 $dt_penjualan = mysqli_query($conn, "SELECT max(idpenjualan) as idpenjualan FROM tb_penjualan");
                                 ?>
                                 <label for="">Nomor Transaksi</label>
-                                <input type="text" name="total" class="form-control" value="<?php echo $kodeMenu ?>">
+                                <input type="text" name="notrans" class="form-control" value="<?php echo $kodeBarang ?>">
                             </div>
                             <div class="form-group">
                                 <label for="pelanggan">Data Pelanggan</label>

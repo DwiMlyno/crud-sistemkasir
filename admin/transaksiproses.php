@@ -19,5 +19,4 @@ mysqli_query($conn, "UPDATE tb_menu set stok='$update' where idmenu = '$idmenu'"
 
 // Redirect tanpa output sebelumnya
 header("Location: transaksitambah.php");
-exit;
 ?>
