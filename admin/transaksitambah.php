@@ -47,7 +47,7 @@ include "header.php";
                                         <td><?= $penjualan['jumlahmenu']; ?></td>
                                         <td><?= "Rp." . number_format($penjualan['subtotal']); ?></td>
                                         <td>
-                                            <a href="#" class="btn btn-danger" role="button"
+                                            <a href="transaksihapustransaksi.php?idmenu=<?php echo $penjualan['idmenu']; ?>&idpenjualan=<?php echo $penjualan['idpenjualan'];?>" class="btn btn-danger" role="button"
                                                 title="Hapus Data"><i class="glyphicon glyphicon-trash"></i></a>
                                         </td>
                                 </tr>

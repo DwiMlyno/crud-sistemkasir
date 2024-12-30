@@ -14,5 +14,6 @@ $idpelanggan= $_POST['pelanggan'];
 mysqli_query($conn,"INSERT INTO tb_penjualan values ('$notrans', '$tanggal', '$total', '$idpelanggan')");
 
 
-header("location : transaksidata.php");
+header("location: transaksidata.php");
 
+?>

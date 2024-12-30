@@ -32,7 +32,6 @@ include "header.php";
               <th>TANGGAL PENJUALAN</th>
               <th>NAMA Pelanggan</th>
               <th>TOTAL</th>
-              <th>OPSI</th>
             </tr>
           </thead>
           <tbody>
